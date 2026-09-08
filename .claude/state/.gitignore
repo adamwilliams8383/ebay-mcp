@@ -1,0 +1,3 @@
+# Live operational state — machine-local, never committed.
+*
+!.gitignore

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "mcp__ebay__ebay_get_orders",
+      "mcp__ebay__ebay_get_order",
+      "mcp__ebay__ebay_get_cancellation_requests",
+      "mcp__ebay__ebay_get_shipping_fulfillments",
+      "mcp__ebay__ebay_get_inventory_item",
+      "mcp__ebay__ebay_get_offers",
+      "mcp__ebay__ebay_get_active_listings",
+      "mcp__ebay__ebay_get_conversations",
+      "mcp__ebay__ebay_get_conversation",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_tabs",
+      "mcp__playwright__browser_wait_for",
+      "Read(.claude/**)",
+      "Bash(cat .claude/state/*.json)"
+    ],
+    "ask": [
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_select_option",
+      "mcp__playwright__browser_press_key",
+      "mcp__ebay__ebay_send_message",
+      "mcp__ebay__ebay_bulk_update_price_quantity",
+      "mcp__ebay__ebay_revise_listing",
+      "mcp__ebay__ebay_create_shipping_fulfillment",
+      "mcp__ebay__ebay_issue_refund"
+    ],
+    "deny": [
+      "mcp__ebay__ebay_end_listing",
+      "mcp__ebay__ebay_delete_offer",
+      "mcp__ebay__ebay_delete_inventory_item",
+      "mcp__ebay__ebay_withdraw_offer",
+      "Read(.env)",
+      "Read(.env.*)"
+    ]
+  },
+  "enableAllProjectMcpServers": true
+}

@@ -240,3 +240,11 @@ Taskfile.yml
 
 # Kimi Code CLI local config + skills
 .kimi-code/
+
+# Order-routing agent config (eBay -> Revolution Parts). The broad `.claude` and
+# `.mcp.json` rules above target local agent scratch; these paths are deliberate,
+# reviewable project config and must stay tracked. Live state under
+# .claude/state/ is still ignored by its own .gitignore.
+!/.claude/
+!/.claude/**
+!/.mcp.json
