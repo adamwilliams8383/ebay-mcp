@@ -1,73 +1,67 @@
-# Warehouse routing rules
+# Warehouse routing rules — POINTER, not the policy
 
-**Owned by the operator, not by Claude.** These are the recommendations the Cowork flow was
-applying. Fill in every `TODO` below — until then the `route-orders` skill will stop and ask
-rather than pick a warehouse on its own, which is the intended behavior.
+**The authoritative policy lives at `S:\CLAUDE\ROUTING_RULES.md`.** Adam owns and edits it
+directly; it is read fresh on every run. Do not copy it here — a second copy will drift, and
+this policy has already cost real money when it was got wrong (see §1 of that file: duplicate
+scheduled tasks triple-routed order 04-15124-05948 on 2026-09-02, POs 1796/1797/1798).
 
-Order matters: rule 1 is applied first, and later rules only break ties left by earlier ones.
+## Read before routing anything
 
-## Warehouses
+1. `S:\CLAUDE\ROUTING_RULES.md` — business policy. Sections that decide a route:
+   - **§0** hard security rules — never enter credentials; stop on a login page.
+   - **§1** *the one rule that costs money* — every part ends on exactly ONE active supplier
+     order. Re-verify after each route, and again at end of run.
+   - **§3** classification — read the LINE ITEM inventory panel, never the Warehouse column.
+   - **§4** exception rules A–D (out of stock / can't route / thin profit / Carvana).
+   - **§5** vendor selection — cheapest first, distance to buyer as the tiebreak.
+   - **§6** the exact eBay note text for every outcome.
+2. `S:\CLAUDE\ROUTING_TECHNIQUES.md` — UI mechanics for the same screens (owner: Claude).
+3. `S:\CLAUDE\CARVANA WATCHLIST.txt` — read fresh per order; an unreadable watchlist means
+   HOLD, never "no match".
 
-Fill one row per warehouse you route to.
+## Vendor selection, in brief (§5 is authoritative)
 
-| Code | Name | Location (city, ST) | Notes / restrictions |
-| ---- | ---- | ------------------- | -------------------- |
-| TODO | TODO | TODO                | TODO                 |
-| TODO | TODO | TODO                | TODO                 |
+Cheapest supplier first; distance to the buyer breaks the tie.
 
-## Rule 1 — Hard exclusions
+- ~$5 dearer but much closer to the buyer → take the closer one.
+- Farther but ~$10+ cheaper → take the cheaper one.
+- Equal price → closer wins.
 
-Never route to a warehouse when any of these hold. Add or delete rows as needed.
+Standing vendor constraints — all of these override cheapest-first:
 
-- TODO — e.g. part category X is never sourced from warehouse Y
-- TODO — e.g. warehouse Z does not ship to AK/HI/PR
-- TODO — e.g. oversize/freight parts only from the warehouses that quote LTL
+| Vendor | Rule |
+| ------ | ---- |
+| #1 Cochran Automotive Group | **Never route.** Pick the best non-Cochran option even if Cochran is cheaper. Cochran-only, or the alternative is thin/negative per §4C → do not route, note `CANT ROUTE - COCHRAN ONLY / PRICING TOO HIGH - NEEDS ADAM`, alert Adam immediately. |
+| Griffin Auto Group | **Never route.** Cancelled every order since we started with them. If Griffin is the ONLY supplier offered → **stop**, tell Adam immediately (push notification), note `CANT ROUTE - GRIFFIN ONLY - ADAM NOTIFIED`, and do **not** run rule §4A on it — no quantity change, no buyer message. He handles these. |
+| Tonsa Automotive | **Ask Adam first** — known pricing issue. If Tonsa is the pick, note it, give Adam the options, wait. |
+| Tonkin Parts Center | A different vendor from Tonsa. Fine to route. |
+| Pinnacle Parts | On hold entirely. Do not route; note and flag. |
 
-## Rule 2 — Stock
+## Where stock actually comes from (§3)
 
-TODO. State the minimum. For example: the warehouse must show on-hand ≥ the order quantity;
-"backorder" or "special order" status does not count as in stock.
+Read the line-item inventory panel on the RP order detail page:
 
-## Rule 3 — Primary preference
+- green `N In stock` > 0 → **we own it.** Only Vintage and Pinnacle hold own stock. Open the
+  "Your warehouses" modal: *Vintage Direct Upload, Beaver Dam WI* → Vintage order (check the
+  day's inventory file first); *Pinnacle Parts, Coral Springs FL* → on hold.
+- green `0 In stock` + blue `N In shared warehouses` > 0 → **route via dropship.**
+- `0 In stock` and `0 In shared warehouses` → exception rule §4A.
 
-TODO. This is the main recommendation the Cowork flow encoded. Pick the shape that matches
-how you actually decide and delete the rest:
+**The Warehouse column in the order list and the "Warehouse:" dropdown on the detail page
+both mean nothing.** They are default labels; a fully routed order still shows a blank or
+"Not Assigned" warehouse. Verified independently on order 74870144 (eBay 24-15129-48762),
+routed to supplier order 1169 with an empty Warehouse column.
 
-- **Closest to the buyer** — fewest transit days to the ship-to ZIP wins.
-- **Cheapest landed** — lowest unit cost + inbound freight wins.
-- **Fixed priority list** — always warehouse A if it has stock, else B, else C.
-- **Split by part category** — TODO which categories go where.
+## Existing tooling this skill must not duplicate
 
-## Rule 4 — Transit-time ceiling
+`S:\CLAUDE\automation` already implements much of this flow. Prefer these over reimplementing:
 
-TODO. Example: never route to a warehouse whose estimated transit exceeds the handling time
-promised on the eBay listing; if only such a warehouse has stock, treat the order as an
-exception and ask.
+| Tool | Purpose |
+| ---- | ------- |
+| `route.js` | drives the RP dropship dialog |
+| `oos.js <ORDER#> [--commit]` | rule §4A — quantity to 0, buyer message, eBay note; refuses on every guard |
+| `gideon.js --add <ORDER#> --send-if-new` | rule §4B — batches can't-route orders to Gideon Williams at RP |
+| `inv.py "<SKU>"` | Vintage inventory-file lookup by full eBay Custom Label |
 
-## Rule 5 — Tie-breaks
-
-Applied in order when rules 1–4 leave more than one candidate.
-
-1. TODO — e.g. lower unit cost
-2. TODO — e.g. fewer transit days
-3. TODO — e.g. better recent fill/damage record
-4. TODO — e.g. the lower-numbered warehouse code, so the outcome is deterministic
-
-## Exceptions that always come to the operator
-
-Do not resolve these automatically:
-
-- Order value over $TODO
-- Quantity greater than TODO
-- Freight / oversize parts
-- Buyer address is a freight terminal, APO/FPO, or outside the lower 48
-- The only in-stock warehouse violates a rule above
-
-## Worked example
-
-Once the rules above are filled in, keep one worked example here so the decision format
-stays unambiguous:
-
-> Order 12-34567-89012 · SKU ABC-123 · qty 1 · ship-to Dallas TX 75201
-> Candidates: WH-EAST (2 on hand, $41.10, 4 days), WH-CENTRAL (5 on hand, $43.25, 2 days)
-> Rule 3 (closest to buyer) → **WH-CENTRAL**. Cost tie-break not reached.
+Live per-order state is tracked in `S:\CLAUDE\ROUTING_STATE.md`, updated at the end of
+every run.
