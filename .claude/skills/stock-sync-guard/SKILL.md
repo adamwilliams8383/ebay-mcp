@@ -20,7 +20,14 @@ accept it and refund. That is why this skill sends a message rather than cancell
 outright, and why the eBay MCP server has no seller-cancel tool to reach for.
 
 The actual accept-and-refund happens in eBay Seller Hub once the buyer's request lands.
-`ebay_get_cancellation_requests` is how you see it arrive.
+`ebay_get_cancellation_requests` is how you see it arrive; this server has no seller-cancel
+tool (see "Known gaps" in `.claude/README.md` for the Post-Order endpoints that would add one).
+
+**Never relabel a stock-out as a buyer request.** If the loop is ever automated, the
+`BUYER_ASKED_CANCEL` reason code is only truthful after the buyer has actually asked. Using
+it on an unanswered order to avoid the defect misreports the cancellation to eBay. When the
+buyer does not respond, the honest options are `OUT_OF_STOCK_OR_CANNOT_FULFILL` and its
+defect, or waiting — and that call belongs to the operator, not to you.
 
 ## Step 1 — Confirm it is really out of stock
 

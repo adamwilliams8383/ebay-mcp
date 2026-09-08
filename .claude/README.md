@@ -75,10 +75,18 @@ To loosen a rule, move the tool between arrays. Do not add `mcp__ebay` wholesale
 
 ## Known gaps
 
-- **No seller-initiated cancel tool.** The eBay MCP server exposes
-  `ebay_get_cancellation_requests` (read) but no seller cancel. Accepting a cancellation and
-  refunding still happens in Seller Hub. `stock-sync-guard` is built around asking the buyer
-  to request it, which also avoids the seller defect.
+- **No seller-cancel tool yet — but the API exists.** This server exposes
+  `ebay_get_cancellation_requests` (read) only, so accepting a cancellation and refunding
+  still happens in Seller Hub. The endpoints to close that loop are eBay's Post-Order API v2:
+  `POST /post-order/v2/cancellation` (create, with a `cancelReason`) and
+  `POST /post-order/v2/cancellation/{cancelId}/approve`. Neither is wrapped here yet —
+  `src/api/order-management/orderIssueHelpers.ts` deliberately filters `getOrders`
+  client-side instead. Wrapping them is a self-contained addition to `src/api/`.
+
+  Reason codes decide whether you take a defect: `BUYER_ASKED_CANCEL` and `ADDRESS_ISSUES`
+  do not, `OUT_OF_STOCK_OR_CANNOT_FULFILL` does. `BUYER_ASKED_CANCEL` is only accurate once
+  the buyer has actually asked — which is why `stock-sync-guard` messages first and cancels
+  second, and why it must never be used to relabel a stock-out.
 - **Tracking upload is not automated.** Revolution Parts supplies tracking on its own
   schedule; pushing it back with `ebay_create_shipping_fulfillment` is a separate step.
 - **Revolution Parts has no API here.** Everything on that side is browser-driven, so it
