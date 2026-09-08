@@ -73,6 +73,23 @@ messages stop depending on eBay's DOM, which is what breaks browser automation m
 To loosen a rule, move the tool between arrays. Do not add `mcp__ebay` wholesale to
 `allow` — that grants all 299 tools, refunds and deletes included.
 
+## Troubleshooting
+
+**`ebay` server fails with "Connection closed."** Almost always the build step. `.mcp.json`
+runs `node build/index.js`, and an unbuilt checkout has no such file — the MCP handshake dies
+with no useful error. Fix:
+
+```bash
+npm install && npm run build
+ls build/index.js   # should exist
+```
+
+Then restart Claude Code and check `/mcp`. If it still fails, run `npm run diagnose` for
+credential and connectivity problems, which surface the same way.
+
+**`playwright` connects but the browser is logged out.** Expected on a fresh profile. Log in
+to Revolution Parts by hand once; the profile persists across runs.
+
 ## Known gaps
 
 - **No seller-cancel tool yet — but the API exists.** This server exposes
