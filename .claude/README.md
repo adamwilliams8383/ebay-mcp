@@ -38,21 +38,36 @@ this folder; the two skills are the entry points.
 /route-orders
 ```
 
-For the "auto" part — Cowork watched the browser; Claude Code does not. Poll instead:
+For the "auto" part — Cowork watched the browser; Claude Code does not. Use a **Routine**
+(Code tab → Routines → New routine → Local):
 
-```
-/loop 10m /route-orders
-```
+| Field        | Value                                          |
+| ------------ | ---------------------------------------------- |
+| Name         | `route-orders`                                 |
+| Folder       | this repo                                      |
+| Instructions | `Run /route-orders.`                           |
+| Schedule     | Hourly, or ask Claude for "every 15 minutes"   |
 
-That re-runs the sweep every ten minutes for as long as the Claude Code session is open.
-`.claude/state/routed-orders.json` is what stops a re-run from double-ordering, so never
+Routines fire without an open session, survive app restarts, run one catch-up after a missed
+slot, and pick up `.mcp.json` — so the eBay and Playwright servers are there. They only run
+while the desktop app is open and the machine is awake; enable **Keep computer awake** in
+Settings → Desktop app → General if the shop machine idles.
+
+Click **Run now** once after creating it and answer the permission prompts with "always
+allow", or scheduled runs stall waiting on approval. The `ask` tier in `settings.json` is
+deliberate, though: think before blanket-approving the order placement and buyer messages.
+
+`/loop 10m /route-orders` does the same polling inside an open session — fine for a busy
+afternoon you are watching anyway, but a Routine is the better default.
+
+`.claude/state/routed-orders.json` is what stops any of these from double-ordering, so never
 delete it mid-day.
 
 ## What carries over from Cowork, and what does not
 
 | Cowork                          | Here                                                          |
 | ------------------------------- | ------------------------------------------------------------- |
-| Fires on its own                | You start a session; `/loop` polls                            |
+| Fires on its own                | A Routine fires on a schedule; `/loop` polls inside a session |
 | Browser for both eBay and RP    | eBay via MCP API calls; browser only for Revolution Parts     |
 | Routing rules held in the prompt| Version-controlled in `routing-rules.md`                      |
 | Nothing remembered between runs | `state/routed-orders.json` prevents double-ordering           |
