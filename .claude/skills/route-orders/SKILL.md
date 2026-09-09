@@ -36,7 +36,7 @@ driving the browser by hand — they carry guards earned the hard way.
 | `route.js <RECORD#> [--commit [supplier]]` | dry-run / commit the dropship route |
 | `oos.js <ORDER#> [--commit]` | rule §4A out-of-stock workflow |
 | `gideon.js --add <ORDER#> --send-if-new` | rule §4B batch to Gideon at RP |
-| `note.js <ORDER#> "TEXT" [itemIndex]` | write the eBay seller note |
+| `note.js <ORDER#> "TEXT" [--all-items]` | write the eBay seller note; `--all-items` for multi-item orders (§6) |
 | `inv.py "<SKU>"` | Vintage inventory-file lookup |
 | `build_vp.py <spec.json>` | build the `ORDERS MM-DD-YYYY VP<n>.xlsx` for Amanda |
 

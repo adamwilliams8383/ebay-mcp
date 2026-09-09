@@ -107,14 +107,18 @@ blank shipping and ship-to, Item Title).
 ### a. eBay note on EVERY line item
 
 ```bash
-node S:/CLAUDE/automation/note.js <ORDER#> "SENT TO AMANDA"
+node S:/CLAUDE/automation/note.js <ORDER#> "SENT TO AMANDA" --all-items
 ```
 
-**Multi-item orders have no order-level note menu.** `note.js` fails on them with
-`"Add/edit note" menu item not found`, even with an `[itemIndex]`. The note lives only at item
-level: click the per-item kebab **once** (it toggles — screenshot before clicking again),
-query `button.fake-menu-button__item` with `width>0`, click the "Add/edit note" row, then
-textarea → Save. Verify with `/My note:/g` — expect one match per item noted.
+`--all-items` is required on a multi-item order (`ROUTING_RULES.md` §6: "Multi-item orders
+get the note on EVERY line item"). Such orders have **no order-level note entry at all** — the
+note lives on the per-item kebabs — so a plain `note.js` call covers only one item.
+
+The flag asks eBay how many line items the order really has, writes, then re-counts the
+matching notes on the page and advances until the counts agree. It does not assume an
+index-to-item mapping, because the kebab list can include an order-level kebab that carries no
+note entry. It exits non-zero if it cannot reach every item, so a partial run is visible
+rather than silent.
 
 ### b. ShipStation — assign to Amanda Janz
 
