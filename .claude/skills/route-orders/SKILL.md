@@ -38,6 +38,7 @@ driving the browser by hand — they carry guards earned the hard way.
 | `gideon.js --add <ORDER#> --send-if-new` | rule §4B batch to Gideon at RP |
 | `note.js <ORDER#> "TEXT" [--all-items]` | write the eBay seller note; `--all-items` for multi-item orders (§6) |
 | `inv.py "<SKU>"` | Vintage inventory-file lookup |
+| `alert.js "<subject>" "<body>"` | **reach Adam from an unattended run** — SMTP, not push (push silently no-ops) |
 | `build_vp.py <spec.json>` | build the `ORDERS MM-DD-YYYY VP<n>.xlsx` for Amanda |
 
 ## Step 0 — Reconcile rule §4B orders first
@@ -118,7 +119,7 @@ so asking them to ask is nonsense.
 | State | Action |
 | ----- | ------ |
 | **Not routed** (no active PO) — the normal case | Do not route. Note `BUYER REQUESTED CANCEL - ADAM TO APPROVE`. Report the order ID. Nothing else. |
-| **Already routed** (active PO) — the expensive case | Do **not** cancel the PO (§0 does not permit it for this). Note `BUYER REQUESTED CANCEL - PO <n> ALREADY PLACED - NEEDS ADAM` and alert Adam immediately with supplier, PO and what we paid. |
+| **Already routed** (active PO) — the expensive case | Do **not** cancel the PO (§0 does not permit it for this). Note `BUYER REQUESTED CANCEL - PO <n> ALREADY PLACED - NEEDS ADAM` and alert Adam with `alert.js` (**not** push) giving supplier, PO and what we paid. |
 
 Once noted, the order is done from our side. It keeps appearing in the Cancellation Requested
 filter until Adam approves it — that is expected, not a new problem.
@@ -269,10 +270,10 @@ around it:
 | ------- | ------- | ------ |
 | `ALREADY ROUTED` | an active PO exists | stop — write any missing eBay note, record it, move on |
 | `NO SUPPLIERS FOUND` | rule §4B | screenshot to confirm the panel, note `CANT ROUTE ORDER CONTACT GIDEON`, then `node gideon.js --add <ORDER#> --send-if-new` **once at the end of the run** |
-| `GRIFFIN ONLY - STOP AND TELL ADAM` | §5 Griffin rule | **Stop.** Do not route, and do **not** hand to stock-sync-guard — no quantity change, no buyer message. Alert Adam immediately (push notification) and note `CANT ROUTE - GRIFFIN ONLY - ADAM NOTIFIED`. He handles it. |
+| `GRIFFIN ONLY - STOP AND TELL ADAM` | §5 Griffin rule | **Stop.** Do not route, and do **not** hand to stock-sync-guard — no quantity change, no buyer message. Note `CANT ROUTE - GRIFFIN ONLY - ADAM NOTIFIED` and alert him with `alert.js` (**not** push — it no-ops unattended). He handles it. |
 | `GRIFFIN + COCHRAN ONLY - STOP AND TELL ADAM` | both bans fired | Same as above. |
 | `GRIFFIN - NEVER ROUTE (Adam 09-08)` | Griffin was the pick | Re-run naming the best non-Griffin supplier. |
-| `COCHRAN ONLY - ASK ADAM` | §5 Cochran rule | do not route. Note `CANT ROUTE - COCHRAN ONLY / PRICING TOO HIGH - NEEDS ADAM` and alert Adam immediately — push notification, not just the run summary |
+| `COCHRAN ONLY - ASK ADAM` | §5 Cochran rule | do not route. Note `CANT ROUTE - COCHRAN ONLY / PRICING TOO HIGH - NEEDS ADAM` and alert Adam with `alert.js` (**not** push — it no-ops unattended) |
 | `COCHRAN - NEVER ROUTE` | Cochran was the pick | re-run naming the best non-Cochran supplier, if one is viable under §4C |
 | `TONSA - ASK ADAM FIRST` | known pricing issue | note it, give Adam the options, wait. Tonkin Parts Center is a different vendor and is fine |
 | `NO MATCHING SUPPLIER` | the named supplier was not offered | re-read the offered rows and pick again |

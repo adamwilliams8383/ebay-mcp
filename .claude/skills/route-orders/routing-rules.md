@@ -32,7 +32,7 @@ Standing vendor constraints — all of these override cheapest-first:
 | Vendor | Rule |
 | ------ | ---- |
 | #1 Cochran Automotive Group | **Never route.** Pick the best non-Cochran option even if Cochran is cheaper. Cochran-only, or the alternative is thin/negative per §4C → do not route, note `CANT ROUTE - COCHRAN ONLY / PRICING TOO HIGH - NEEDS ADAM`, alert Adam immediately. |
-| Griffin Auto Group | **Never route.** Cancelled every order since we started with them. If Griffin is the ONLY supplier offered → **stop**, tell Adam immediately (push notification), note `CANT ROUTE - GRIFFIN ONLY - ADAM NOTIFIED`, and do **not** run rule §4A on it — no quantity change, no buyer message. He handles these. |
+| Griffin Auto Group | **Never route.** Cancelled every order since we started with them. If Griffin is the ONLY supplier offered → **stop**, tell Adam with `alert.js` (SMTP — push no-ops on unattended runs), note `CANT ROUTE - GRIFFIN ONLY - ADAM NOTIFIED`, and do **not** run rule §4A on it — no quantity change, no buyer message. He handles these. |
 | Tonsa Automotive | Hold **lifted 2026-09-09**. Routable normally — **but RP's quoted price for Tonsa is not reliable**: they are cheaper than RP shows. Treat a Tonsa row within ~$10 of the cheapest as competitive, and never raise rule §4C on a Tonsa order from the RP figure alone. |
 | Tonkin Parts Center | A different vendor from Tonsa. Fine to route. |
 | Pinnacle Parts | On hold entirely. Do not route; note and flag. |
