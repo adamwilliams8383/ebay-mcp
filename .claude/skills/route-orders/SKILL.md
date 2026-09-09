@@ -99,6 +99,30 @@ already carry a routed note. Sweep them each run:
 Never run the rule §4A actions first and re-route afterwards — messaging a buyer to cancel an
 order you could still fill throws the sale away.
 
+## Step 0c — Buyer-requested cancellations (rule §4F)
+
+RP files these in the **same** In Progress / Cancellation Requested bucket as rule §4E, so the
+Step 0b sweep surfaces both. They are different rules with different actions.
+
+**Tell them apart by who asked.** The order detail says plainly
+*"The buyer has requested a cancellation: Approve | Reject"* — that is §4F. Rule §4E is the
+**warehouse** backing out and shows a **cancelled supplier PO**; a §4F order usually has no
+supplier order at all.
+
+**This is not rule §4A.** Do **not** zero the listing and do **not** message the buyer. The
+part is not out of stock — the listing should keep selling — and the buyer has already asked,
+so asking them to ask is nonsense.
+
+**Never approve or reject it yourself** (§0: Adam cancels on his side).
+
+| State | Action |
+| ----- | ------ |
+| **Not routed** (no active PO) — the normal case | Do not route. Note `BUYER REQUESTED CANCEL - ADAM TO APPROVE`. Report the order ID. Nothing else. |
+| **Already routed** (active PO) — the expensive case | Do **not** cancel the PO (§0 does not permit it for this). Note `BUYER REQUESTED CANCEL - PO <n> ALREADY PLACED - NEEDS ADAM` and alert Adam immediately with supplier, PO and what we paid. |
+
+Once noted, the order is done from our side. It keeps appearing in the Cancellation Requested
+filter until Adam approves it — that is expected, not a new problem.
+
 ## Step 1 — Pull the unrouted queue
 
 Call `ebay_get_orders` with:
