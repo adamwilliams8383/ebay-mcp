@@ -270,12 +270,11 @@ around it:
 | ------- | ------- | ------ |
 | `ALREADY ROUTED` | an active PO exists | stop — write any missing eBay note, record it, move on |
 | `NO SUPPLIERS FOUND` | rule §4B | screenshot to confirm the panel, note `CANT ROUTE ORDER CONTACT GIDEON`, then `node gideon.js --add <ORDER#> --send-if-new` **once at the end of the run** |
+| `TONSA ONLY - STOP AND TELL ADAM` | §5 Tonsa block | **Stop.** Do not route, and do **not** hand to stock-sync-guard — the part is in stock, RP's price for Tonsa is simply untrustworthy. Note `CANT ROUTE - TONSA BLOCKED (RP PRICING) - NEEDS ADAM`, alert via `alert.js`. |
+| `TONSA - BLOCKED WHILE RP PRICING IS WRONG` | Tonsa was the named pick | Pick a different supplier. |
 | `GRIFFIN ONLY - STOP AND TELL ADAM` | §5 Griffin rule | **Stop.** Do not route, and do **not** hand to stock-sync-guard — no quantity change, no buyer message. Note `CANT ROUTE - GRIFFIN ONLY - ADAM NOTIFIED` and alert him with `alert.js` (**not** push — it no-ops unattended). He handles it. |
-| `GRIFFIN + COCHRAN ONLY - STOP AND TELL ADAM` | both bans fired | Same as above. |
+| `GRIFFIN + TONSA ONLY - STOP AND TELL ADAM` | both bans fired | Same as above. |
 | `GRIFFIN - NEVER ROUTE (Adam 09-08)` | Griffin was the pick | Re-run naming the best non-Griffin supplier. |
-| `COCHRAN ONLY - ASK ADAM` | §5 Cochran rule | do not route. Note `CANT ROUTE - COCHRAN ONLY / PRICING TOO HIGH - NEEDS ADAM` and alert Adam with `alert.js` (**not** push — it no-ops unattended) |
-| `COCHRAN - NEVER ROUTE` | Cochran was the pick | re-run naming the best non-Cochran supplier, if one is viable under §4C |
-| `TONSA - ASK ADAM FIRST` | known pricing issue | note it, give Adam the options, wait. Tonkin Parts Center is a different vendor and is fine |
 | `NO MATCHING SUPPLIER` | the named supplier was not offered | re-read the offered rows and pick again |
 
 **Never apply a rule A action to a rule B order** (`ROUTING_RULES.md` §4B). The part IS in
