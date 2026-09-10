@@ -35,6 +35,8 @@ Standing vendor constraints — all of these override cheapest-first:
 | Griffin Auto Group | **Never route.** Cancelled every order since we started with them. If Griffin is the ONLY supplier offered → **stop**, tell Adam with `alert.js` (SMTP — push no-ops on unattended runs), note `CANT ROUTE - GRIFFIN ONLY - ADAM NOTIFIED`, and do **not** run rule §4A on it — no quantity change, no buyer message. He handles these. |
 | Tonsa Automotive | **Blocked 2026-09-09** while RP's quoted price for them is wrong — *no* Tonsa quote can be trusted, so cheapest-first is unusable on their rows. Tonsa-only → do not route, note `CANT ROUTE - TONSA BLOCKED (RP PRICING) - NEEDS ADAM`, alert via `alert.js`. **Not** rule §4A — the part is in stock. Lift only when Adam says RP fixed it. |
 | Tonkin Parts Center | A different vendor from Tonsa. Fine to route. |
+| Capital Chevrolet of Wake Forest | **Never route.** Barred by Adam 2026-09-10. Capital-Chevy-only → **stop**, note `CANT ROUTE - CAPITAL CHEVROLET BARRED - ADAM NOTIFIED`, alert via `alert.js`, and do **not** run rule §4A on it. |
+| Capital Ford of Raleigh | **A different dealer from Capital Chevrolet — not barred.** Ordinary supplier; routed to on 09-08 (PO 1448). The ban matches CAPITAL + CHEV, never `capital` alone. |
 | Pinnacle Parts | On hold entirely. Do not route; note and flag. |
 
 ## Where stock actually comes from (§3)

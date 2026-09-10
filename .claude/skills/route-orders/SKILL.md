@@ -275,6 +275,8 @@ around it:
 | `GRIFFIN ONLY - STOP AND TELL ADAM` | §5 Griffin rule | **Stop.** Do not route, and do **not** hand to stock-sync-guard — no quantity change, no buyer message. Note `CANT ROUTE - GRIFFIN ONLY - ADAM NOTIFIED` and alert him with `alert.js` (**not** push — it no-ops unattended). He handles it. |
 | `GRIFFIN + TONSA ONLY - STOP AND TELL ADAM` | both bans fired | Same as above. |
 | `GRIFFIN - NEVER ROUTE (Adam 09-08)` | Griffin was the pick | Re-run naming the best non-Griffin supplier. |
+| `CAPITAL CHEVROLET ONLY - STOP AND TELL ADAM` | §5 Capital Chevrolet ban | **Stop.** Do not route, do **not** hand to stock-sync-guard — the part is in stock. Note `CANT ROUTE - CAPITAL CHEVROLET BARRED - ADAM NOTIFIED` and alert via `alert.js`. |
+| `CAPITAL CHEVROLET - NEVER ROUTE (Adam 09-10)` | Capital Chevrolet was the pick | Re-run naming the best remaining supplier. Capital **Ford** of Raleigh is a different dealer and is still routable. |
 | `NO MATCHING SUPPLIER` | the named supplier was not offered | re-read the offered rows and pick again |
 
 **Never apply a rule A action to a rule B order** (`ROUTING_RULES.md` §4B). The part IS in
