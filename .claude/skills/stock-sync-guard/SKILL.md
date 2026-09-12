@@ -124,6 +124,35 @@ The job is not done when the message sends. On each later run of this skill or o
   message and cancels the next day if the buyer has not acted. A silent buyer becomes an
   item-not-received case, which is worse than a defect. The call is Adam's.
 
+## Step 4b — Re-verify the quantity is STILL zero (every sweep)
+
+Zeroing the listing once is not enough; it has to stay zero. On 2026-09-12 order
+`09-15158-00641` was correctly found at 0 available at 04:51 (1 listed, 1 sold), and by
+morning the listing read **2 listed, 1 sold** — one unit back on sale for a part with no
+stock anywhere. Nothing on our side raised it and the three other open rule §4A listings did
+not move, so something outside the run (most likely Revolution Parts' listing sync) can put
+quantity back on a listing we zeroed. Nothing in the sweep looked again.
+
+On **every** sweep, after the routing work:
+
+```bash
+node S:/CLAUDE/automation/oos-audit.js --fix
+```
+
+It re-reads the live available quantity (GetItem `Quantity - QuantitySold`) of every order
+noted `MESSAGED TO CANCEL` **and** every order `rule-a.log` says was zeroed in the last 7 days
+— once Adam approves the cancellation the order leaves the page, which is exactly when eBay
+offers to restock it. Without `--fix` it is read-only.
+
+**It checks RP before re-zeroing.** A climb-back is only wrong while the part is still
+unavailable. The first live run (09-12) found six listings back on sale: four were RP 0/0
+(phantom — re-zeroed) but `25-15111-21154` and `23-15111-59458` had 2 and 5 in shared
+warehouses — RP's sync had legitimately restocked them, and re-zeroing hid real stock until
+it was restored by hand. So: RP stock anywhere → **RESTOCKED, left alone, reported**; RP
+unreadable → not touched, check by hand; RP still 0/0 → re-zeroed and logged to
+`rule-a.log`. Report every outcome by order ID. **A listing still above 0 after the fix means
+the call is not taking — tell Adam.**
+
 ## Standalone sweep
 
 Run without a specific order to catch drift *before* it sells — this is additive to §4A, not

@@ -328,6 +328,18 @@ To fix a duplicate: Cancel Order on the NEWEST row, reason "Customer Requested C
 ("Other" fails silently), reload, confirm it reads Cancelled. Cancelling an RP purchase order
 is permitted *only* to undo a duplicate route.
 
+## Step 5c — Re-verify every MESSAGED TO CANCEL listing is still at zero
+
+```bash
+node S:/CLAUDE/automation/oos-audit.js --fix
+```
+
+Quantity can climb back after rule §4A zeroes it (`09-15158-00641` went 0 → 1 available
+overnight on 09-12 with no stock anywhere — most likely RP's listing sync). This re-reads every
+`MESSAGED TO CANCEL` listing and re-zeroes any that can still sell, logging to `rule-a.log`.
+Report re-zeroes by order ID; anything still above 0 after the fix goes to Adam. Details in
+`stock-sync-guard` Step 4b.
+
 ## Step 6 — Record it
 
 Three records, in this order, immediately after the route is verified — before moving to the
