@@ -54,6 +54,7 @@ describe('Environment Configuration', () => {
 
       delete process.env.EBAY_CLIENT_ID;
       delete process.env.EBAY_CLIENT_SECRET;
+      delete process.env.EBAY_ENVIRONMENT;
 
       const config = getEbayConfig();
 
