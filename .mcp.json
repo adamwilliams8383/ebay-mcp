@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "ebay": {
+      "command": "node",
+      "args": ["build/index.js"],
+      "env": {
+        "EBAY_MCP_TOOLS": "fulfillment,inventory,communication,trading,account"
+      }
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest", "--caps=vision"]
+    }
+  }
+}
