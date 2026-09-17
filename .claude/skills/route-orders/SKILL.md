@@ -277,6 +277,7 @@ around it:
 | `GRIFFIN + TONSA ONLY - STOP AND TELL ADAM` | both bans fired | Same as above. |
 | `GRIFFIN - NEVER ROUTE (Adam 09-08)` | Griffin was the pick | Re-run naming the best non-Griffin supplier. |
 | `CAPITAL CHEVROLET ONLY - STOP AND TELL ADAM` | §5 Capital Chevrolet ban | **Stop.** Do not route, do **not** hand to stock-sync-guard — the part is in stock. Note `CANT ROUTE - CAPITAL CHEVROLET BARRED - ADAM NOTIFIED` and alert via `alert.js`. |
+| `COCHRAN ONLY - STOP AND TELL ADAM` / `COCHRAN - NEVER ROUTE (Adam 09-17)` | §5 Cochran ban (re-barred 09-17) | **Stop.** Do not route, do **not** hand to stock-sync-guard. The shared-warehouse check runs first and turns it into `SHARED STOCK NOT OFFERED - CONTACT GIDEON` when another warehouse has the part; otherwise note `CANT ROUTE - COCHRAN ONLY - ADAM NOTIFIED` and alert via `alert.js`. |
 | `CAPITAL CHEVROLET - NEVER ROUTE (Adam 09-10)` | Capital Chevrolet was the pick | Re-run naming the best remaining supplier. Capital **Ford** of Raleigh is a different dealer and is still routable. |
 | `NO MATCHING SUPPLIER` | the named supplier was not offered | re-read the offered rows and pick again |
 

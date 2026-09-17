@@ -31,7 +31,7 @@ Standing vendor constraints — all of these override cheapest-first:
 
 | Vendor | Rule |
 | ------ | ---- |
-| #1 Cochran Automotive Group | **Unblocked 2026-09-09.** Ordinary supplier — no preference, no penalty. Competes on cheapest-then-closest like anyone else. |
+| #1 Cochran Automotive Group | **Never route.** Barred again 2026-09-17 after cancelling `15-15160-83253` on a part RP showed in stock. Cochran-only → shared-warehouse modal first (Gideon if another warehouse has it), else **stop**, note `CANT ROUTE - COCHRAN ONLY - ADAM NOTIFIED`, alert via `alert.js`. Not rule §4A. |
 | Griffin Auto Group | **Never route.** Cancelled every order since we started with them. If Griffin is the ONLY supplier offered → **stop**, tell Adam with `alert.js` (SMTP — push no-ops on unattended runs), note `CANT ROUTE - GRIFFIN ONLY - ADAM NOTIFIED`, and do **not** run rule §4A on it — no quantity change, no buyer message. He handles these. |
 | Tonsa Automotive | **Blocked 2026-09-09** while RP's quoted price for them is wrong — *no* Tonsa quote can be trusted, so cheapest-first is unusable on their rows. Tonsa-only → do not route, note `CANT ROUTE - TONSA BLOCKED (RP PRICING) - NEEDS ADAM`, alert via `alert.js`. **Not** rule §4A — the part is in stock. Lift only when Adam says RP fixed it. |
 | Tonkin Parts Center | A different vendor from Tonsa. Fine to route. |
